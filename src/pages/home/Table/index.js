@@ -16,7 +16,7 @@ export default class extends React.Component {
       files: files,
       isAllSelected: this.getDefaultStatus(files)
     };
-    
+
     this.btns = [];
     this.btnsLength = 0;
     this.onModalClose = this.onModalClose.bind(this);
@@ -89,7 +89,7 @@ export default class extends React.Component {
                             </div>
                           </div> : <div>{domains.length} Domains</div>
                       }
-                      
+
                     </td>
                     <td>{fileType}</td>
                     <td>
@@ -129,7 +129,7 @@ export default class extends React.Component {
         ele.click();
       }
     }
-      
+
     });
     this.setState({
       isAllSelected: !this.state.isAllSelected
@@ -147,7 +147,7 @@ export default class extends React.Component {
 
 
   switchStatus(file, enable, port, type) {
-    
+
     const files = this.state.files;
     const actionType = !enable ? 'enableFile':'disableFile';
     const me = this;
@@ -163,7 +163,7 @@ export default class extends React.Component {
     }
     files[file].enable = !enable;
 
-    fetch('http://127.0.0.1:' + port + '/api?action='+actionType +'&params='+JSON.stringify(fileType)).then(function (res) {
+    fetch('/api?action='+actionType +'&params='+JSON.stringify(fileType)).then(function (res) {
       me.setState({
         files,
         isAllSelected

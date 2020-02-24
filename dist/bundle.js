@@ -5017,7 +5017,7 @@ var _class = function (_React$Component) {
       }
       files[file].enable = !enable;
 
-      fetch('http://127.0.0.1:' + port + '/api?action=' + actionType + '&params=' + JSON.stringify(fileType)).then(function (res) {
+      fetch('/api?action=' + actionType + '&params=' + JSON.stringify(fileType)).then(function (res) {
         me.setState({
           files: files,
           isAllSelected: isAllSelected
@@ -5506,7 +5506,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var store = (0, _redux.createStore)(_reducer2.default, {},
 // 使用Redux-devtool必须要加入下面这一行代码
-window.devToolsExtension ? window.devToolsExtension() : undefined);
+window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : undefined);
 
 exports.default = store;
 
