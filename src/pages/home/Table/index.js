@@ -8,6 +8,19 @@ import Modal from '../../../components/Modal';
 import SimpleEditor from '../../../components/Editor';
 import './styles.less';
 
+function reorder(list) {
+  const trueList = [];
+  const falseList = [];
+  Object.keys(list).forEach(key => {
+    if(list[key].enable) {
+      trueList.push(key);
+    } else {
+      falseList.push(key);
+    }
+  });
+  return trueList.concat(falseList);
+}
+
 export default class extends React.Component {
   constructor (props, state) {
     super(props, state);
@@ -33,9 +46,50 @@ export default class extends React.Component {
     })
   }
 
-  render () {
+  renderTableRow(fileKey, file) {
     let { fileType, port } = this.props;
 
+    const {result , enable} = file;
+    const domains = Object.keys(result || {});
+    const isChecked = enable ? 'checked':'';
+
+    return (
+      <tr className="" key={fileKey}>
+        <td className="color-blue">{fileKey}</td>
+        <td className="status-switch">
+          <label className="form-switch">
+            <input type="checkbox" onClick={this.switchStatus.bind(this, fileKey, enable, port, fileType)} checked={isChecked} ref={this.getRefs}/>
+            <i className="form-icon"></i>
+          </label>
+        </td>
+        <td>
+          {
+            domains.length > 0 ?
+              <div className="popover popover-left">
+                {domains.length} Domains
+                <div className="popover-container">
+                  <div className="card">
+                    <ul className="card-body">
+                      {domains.map((item) => {
+                        return <li>{item}</li>
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              </div> : <div>{domains.length} Domains</div>
+          }
+
+        </td>
+        <td>{fileType}</td>
+        <td>
+          <button className="btn" onClick={this.editFile.bind(this, file, fileType, true)}>View</button>
+          <button className="btn" onClick={this.editFile.bind(this, file, fileType, false)}>Edit</button>
+        </td>
+      </tr>
+    );
+  }
+
+  render () {
     let files = this.state.files;
 
     return (
@@ -58,47 +112,8 @@ export default class extends React.Component {
           </thead>
           <tbody>
             {
-              Object.keys(files).map((file) => {
-                const {result , enable} = files[file];
-                const domains = Object.keys(result || {});
-                const isChecked = enable?'checked':'';
-                const isEnable = enable ? <span className="enable">enabled</span>:<span className='disable'>disabled</span>;
-
-                return (
-                  <tr className="" key={file}>
-                    <td className="color-blue">{file}</td>
-                    <td className="status-switch">
-                      <label className="form-switch">
-                        <input type="checkbox" onClick={this.switchStatus.bind(this, file, enable, port, fileType)} checked={isChecked} ref={this.getRefs}/>
-                        <i className="form-icon"></i>
-                      </label>
-                    </td>
-                    <td>
-                      {
-                        domains.length > 0 ?
-                          <div className="popover popover-left">
-                            {domains.length} Domains
-                            <div className="popover-container">
-                              <div className="card">
-                                <ul className="card-body">
-                                  {domains.map((item) => {
-                                    return <li>{item}</li>
-                                  })}
-                                </ul>
-                              </div>
-                            </div>
-                          </div> : <div>{domains.length} Domains</div>
-                      }
-
-                    </td>
-                    <td>{fileType}</td>
-                    <td>
-                      <button className="btn" onClick={this.editFile.bind(this, file, fileType, true)}>View</button>
-                      <button className="btn" onClick={this.editFile.bind(this, file, fileType, false)}>Edit</button>
-                    </td>
-                  </tr>
-                )
-              })
+              reorder(files)
+                .map((fileKey) => this.renderTableRow(fileKey, files[fileKey]))
             }
           </tbody>
         </table>

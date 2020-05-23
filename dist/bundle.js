@@ -4369,6 +4369,7 @@ var Home = exports.Home = function (_React$Component) {
       var _this2 = this;
 
       var originServerInfo = window.serverInfo;
+
       var _state = this.state,
           serverInfo = _state.serverInfo,
           hosts = _state.hosts,
@@ -4769,6 +4770,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author zdying
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
+function reorder(list) {
+  var trueList = [];
+  var falseList = [];
+  Object.keys(list).forEach(function (key) {
+    if (list[key].enable) {
+      trueList.push(key);
+    } else {
+      falseList.push(key);
+    }
+  });
+  return trueList.concat(falseList);
+}
+
 var _class = function (_React$Component) {
   _inherits(_class, _React$Component);
 
@@ -4802,14 +4816,94 @@ var _class = function (_React$Component) {
       });
     }
   }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
+    key: 'renderTableRow',
+    value: function renderTableRow(fileKey, file) {
       var _props = this.props,
           fileType = _props.fileType,
           port = _props.port;
+      var result = file.result,
+          enable = file.enable;
 
+      var domains = Object.keys(result || {});
+      var isChecked = enable ? 'checked' : '';
+
+      return _react2.default.createElement(
+        'tr',
+        { className: '', key: fileKey },
+        _react2.default.createElement(
+          'td',
+          { className: 'color-blue' },
+          fileKey
+        ),
+        _react2.default.createElement(
+          'td',
+          { className: 'status-switch' },
+          _react2.default.createElement(
+            'label',
+            { className: 'form-switch' },
+            _react2.default.createElement('input', { type: 'checkbox', onClick: this.switchStatus.bind(this, fileKey, enable, port, fileType), checked: isChecked, ref: this.getRefs }),
+            _react2.default.createElement('i', { className: 'form-icon' })
+          )
+        ),
+        _react2.default.createElement(
+          'td',
+          null,
+          domains.length > 0 ? _react2.default.createElement(
+            'div',
+            { className: 'popover popover-left' },
+            domains.length,
+            ' Domains',
+            _react2.default.createElement(
+              'div',
+              { className: 'popover-container' },
+              _react2.default.createElement(
+                'div',
+                { className: 'card' },
+                _react2.default.createElement(
+                  'ul',
+                  { className: 'card-body' },
+                  domains.map(function (item) {
+                    return _react2.default.createElement(
+                      'li',
+                      null,
+                      item
+                    );
+                  })
+                )
+              )
+            )
+          ) : _react2.default.createElement(
+            'div',
+            null,
+            domains.length,
+            ' Domains'
+          )
+        ),
+        _react2.default.createElement(
+          'td',
+          null,
+          fileType
+        ),
+        _react2.default.createElement(
+          'td',
+          null,
+          _react2.default.createElement(
+            'button',
+            { className: 'btn', onClick: this.editFile.bind(this, file, fileType, true) },
+            'View'
+          ),
+          _react2.default.createElement(
+            'button',
+            { className: 'btn', onClick: this.editFile.bind(this, file, fileType, false) },
+            'Edit'
+          )
+        )
+      );
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
 
       var files = this.state.files;
 
@@ -4861,95 +4955,8 @@ var _class = function (_React$Component) {
           _react2.default.createElement(
             'tbody',
             null,
-            Object.keys(files).map(function (file) {
-              var _files$file = files[file],
-                  result = _files$file.result,
-                  enable = _files$file.enable;
-
-              var domains = Object.keys(result || {});
-              var isChecked = enable ? 'checked' : '';
-              var isEnable = enable ? _react2.default.createElement(
-                'span',
-                { className: 'enable' },
-                'enabled'
-              ) : _react2.default.createElement(
-                'span',
-                { className: 'disable' },
-                'disabled'
-              );
-
-              return _react2.default.createElement(
-                'tr',
-                { className: '', key: file },
-                _react2.default.createElement(
-                  'td',
-                  { className: 'color-blue' },
-                  file
-                ),
-                _react2.default.createElement(
-                  'td',
-                  { className: 'status-switch' },
-                  _react2.default.createElement(
-                    'label',
-                    { className: 'form-switch' },
-                    _react2.default.createElement('input', { type: 'checkbox', onClick: _this2.switchStatus.bind(_this2, file, enable, port, fileType), checked: isChecked, ref: _this2.getRefs }),
-                    _react2.default.createElement('i', { className: 'form-icon' })
-                  )
-                ),
-                _react2.default.createElement(
-                  'td',
-                  null,
-                  domains.length > 0 ? _react2.default.createElement(
-                    'div',
-                    { className: 'popover popover-left' },
-                    domains.length,
-                    ' Domains',
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'popover-container' },
-                      _react2.default.createElement(
-                        'div',
-                        { className: 'card' },
-                        _react2.default.createElement(
-                          'ul',
-                          { className: 'card-body' },
-                          domains.map(function (item) {
-                            return _react2.default.createElement(
-                              'li',
-                              null,
-                              item
-                            );
-                          })
-                        )
-                      )
-                    )
-                  ) : _react2.default.createElement(
-                    'div',
-                    null,
-                    domains.length,
-                    ' Domains'
-                  )
-                ),
-                _react2.default.createElement(
-                  'td',
-                  null,
-                  fileType
-                ),
-                _react2.default.createElement(
-                  'td',
-                  null,
-                  _react2.default.createElement(
-                    'button',
-                    { className: 'btn', onClick: _this2.editFile.bind(_this2, file, fileType, true) },
-                    'View'
-                  ),
-                  _react2.default.createElement(
-                    'button',
-                    { className: 'btn', onClick: _this2.editFile.bind(_this2, file, fileType, false) },
-                    'Edit'
-                  )
-                )
-              );
+            reorder(files).map(function (fileKey) {
+              return _this2.renderTableRow(fileKey, files[fileKey]);
             })
           )
         ),

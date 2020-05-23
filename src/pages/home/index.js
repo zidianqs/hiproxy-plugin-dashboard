@@ -31,6 +31,7 @@ export class Home extends React.Component {
 
   render () {
     let originServerInfo = window.serverInfo;
+
     let { serverInfo, hosts, rewrites, showPacFile } = this.state;
     let httpServer = serverInfo.httpServer;
     let httpsServer = serverInfo.httpsServer;
